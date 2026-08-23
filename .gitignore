@@ -1,0 +1,27 @@
+# Build files
+build/
+*.o
+*.obj
+*.exe
+
+# Generated compiler files
+lexer
+parser
+compiler
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
