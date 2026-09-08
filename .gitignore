@@ -5,7 +5,7 @@ build/
 *.exe
 
 # Generated compiler files
-lexer
+
 parser
 compiler
 
