@@ -1,0 +1,8 @@
+# This is a comment
+CLOUD AWS {
+    # Server configuration
+    SERVER web_server {
+        CPU 4
+        MEMORY 16GB
+    }
+}

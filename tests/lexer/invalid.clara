@@ -1,0 +1,8 @@
+CLOUD AWS {
+    SERVER web_server {
+        CPU 4
+        MEMORY 16GB
+        @
+        STORAGE 100GB
+    }
+}

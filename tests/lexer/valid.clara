@@ -1,0 +1,13 @@
+CLOUD AWS {
+    REGION ap-south-1
+
+    SERVER web_server {
+        CPU 4
+        MEMORY 16GB
+        STORAGE 100GB
+    }
+
+    DATABASE main_db {
+        STORAGE 500GB
+    }
+}
