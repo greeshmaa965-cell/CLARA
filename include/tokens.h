@@ -1,0 +1,26 @@
+#ifndef CLARA_TOKENS_H
+#define CLARA_TOKENS_H
+
+typedef enum
+{
+    TOKEN_CLOUD = 1,
+    TOKEN_SERVER,
+    TOKEN_DATABASE,
+    TOKEN_CPU,
+    TOKEN_MEMORY,
+    TOKEN_STORAGE,
+    TOKEN_REGION,
+
+    TOKEN_IDENTIFIER,
+    TOKEN_NUMBER,
+    TOKEN_UNIT,
+
+    TOKEN_LBRACE,
+    TOKEN_RBRACE,
+
+    TOKEN_EOF,
+    TOKEN_LEXICAL_ERROR
+
+} TokenType;
+
+#endif

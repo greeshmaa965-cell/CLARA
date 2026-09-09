@@ -1,0 +1,22 @@
+
+CLOUD AWS {
+    REGION ap-south-1
+
+    SERVER server_1 {
+        CPU 0
+        MEMORY 1MB
+        STORAGE 999TB
+    }
+
+    SERVER my-server-2 {
+        CPU 100
+        MEMORY 32GB
+        STORAGE 500GB
+    }
+
+    DATABASE main_db {
+        STORAGE 1TB
+    }
+
+    # Comment containing symbols @#$%
+}
