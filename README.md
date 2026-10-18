@@ -121,8 +121,8 @@ gcc -Iinclude src/ast/ast.c src/semantic/symbol_table.c src/semantic/semantic.c 
 
 - [x] **Phase 0**: Repository & checkpoint verification
 - [x] **Phase 1**: Language subset freeze & formal EBNF grammar
-- [ ] **Phase 2**: Complete compiler core (Lexer + Parser + AST + Semantic Analyzer integration)
-- [ ] **Phase 3**: Intermediate Representation (IR) and basic code generation
+- [x] **Phase 2**: Complete compiler core (Lexer + Parser + AST + Semantic Analyzer integration)
+- [x] **Phase 3**: Intermediate Representation (IR) and basic code generation
 - [ ] **Phase 4**: Dual-mode input normalization (Canonical JSON)
 - [ ] **Phase 5**: Constraint-aware alternatives & scoring engine
 - [ ] **Phase 6**: Explainable configuration diff
