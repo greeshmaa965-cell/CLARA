@@ -189,21 +189,96 @@ def generate_alternatives(
     }
 
 
+def format_candidates_table(result: dict[str, Any]) -> str:
+    """Formats candidate alternatives as a clean readable ASCII comparison table."""
+    if result.get("status") != "SUCCESS":
+        return f"Status: {result.get('status')}\nMessage: {result.get('message', 'No details available')}"
+
+    lines = []
+    lines.append("\n" + "=" * 96)
+    lines.append(f"CLARA FEASIBLE ALTERNATIVES | Provider: {result['provider'].upper()} | Region: {result['region']}")
+    lines.append(f"Dataset Version: {result['dataset_version']} | Priority: {result['optimization_priority'].upper()}")
+    lines.append("=" * 96)
+    lines.append(f"{'Profile':<22} {'ID':<4} {'Instance Type':<16} {'vCPU':<6} {'RAM':<10} {'Storage':<10} {'Est. Cost':<12} {'Trade-off'}")
+    lines.append("-" * 96)
+
+    for c in result["candidates"]:
+        prof = c["profile"].replace("_", " ").title()
+        cid = c["candidate_id"]
+        rec_mark = " (RECOMMENDED)" if cid == result.get("recommended_candidate_id") else ""
+        prof_str = f"{prof}{rec_mark}"
+        itype = c["instance_type"]
+        vcpu = f"{c['resources']['vcpu']} core"
+        ram = f"{c['resources']['memory_gb']:.1f} GB"
+        storage = f"{c['resources']['storage_gb']:.0f} GB"
+        cost = f"${c['cost']['total_monthly']:.2f}/mo"
+        tradeoff = c["tradeoff_notes"]
+
+        lines.append(f"{prof_str:<22} {cid:<4} {itype:<16} {vcpu:<6} {ram:<10} {storage:<10} {cost:<12} {tradeoff}")
+
+    lines.append("=" * 96 + "\n")
+    return "\n".join(lines)
+
+
 def main():
+    import subprocess
     parser = argparse.ArgumentParser(description="CLARA Alternative Generation Engine")
-    parser.add_argument("--request-json", type=str, required=True, help="Canonical request JSON string")
+    parser.add_argument("--request-json", type=str, help="Canonical request JSON string")
+    parser.add_argument("--clara-file", type=str, help="Path to .clara DSL file to analyze")
     parser.add_argument("--catalog", type=str, default=DEFAULT_CATALOG_PATH, help="Path to catalog snapshot")
+    parser.add_argument("--summary", action="store_true", help="Print human-readable comparison table")
 
     args = parser.parse_args()
 
-    try:
-        req = json.loads(args.request_json)
-    except json.JSONDecodeError as e:
-        print(f"Error parsing request JSON: {e}")
+    req = None
+    if args.request_json:
+        try:
+            req = json.loads(args.request_json)
+        except json.JSONDecodeError as e:
+            print(f"Error parsing request JSON: {e}")
+            return
+    elif args.clara_file:
+        clara_bin = "./clara.exe" if os.name == "nt" else "./clara"
+        if not os.path.exists(clara_bin):
+            print(f"Error: '{clara_bin}' not found. Please build the compiler first using scripts/build.ps1 or build.sh.")
+            return
+
+        proc = subprocess.run([clara_bin, "--ir", args.clara_file], capture_output=True, text=True)
+        if proc.returncode != 0:
+            print(f"Error running compiler on '{args.clara_file}':\n{proc.stderr}")
+            return
+
+        try:
+            ir_data = json.loads(proc.stdout)
+            servers = ir_data.get("resources", {}).get("servers", [])
+            vcpu = servers[0]["cpu"] if servers else 2
+            mem = servers[0]["memory_gb"] if servers else 4.0
+            storage = servers[0]["storage_gb"] if servers else 20.0
+
+            req = {
+                "provider": ir_data.get("provider", "aws"),
+                "region": ir_data.get("region", "ap-south-1"),
+                "workload": servers[0]["name"] if servers else "web_server",
+                "requirements": {
+                    "vcpu_min": vcpu,
+                    "memory_gb_min": mem,
+                    "storage_gb_min": storage
+                },
+                "optimization": {"priority": "cost", "monthly_budget": None},
+                "constraints": {"must_satisfy_all": True}
+            }
+        except json.JSONDecodeError as e:
+            print(f"Error parsing compiler IR output: {e}\nRaw output:\n{proc.stdout}")
+            return
+    else:
+        parser.print_help()
         return
 
     result = generate_alternatives(req, catalog_path=args.catalog)
-    print(json.dumps(result, indent=2))
+    if args.summary:
+        print(format_candidates_table(result))
+    else:
+        print(json.dumps(result, indent=2))
 
 
 if __name__ == "__main__":
