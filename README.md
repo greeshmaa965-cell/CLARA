@@ -125,5 +125,5 @@ gcc -Iinclude src/ast/ast.c src/semantic/symbol_table.c src/semantic/semantic.c 
 - [x] **Phase 3**: Intermediate Representation (IR) and basic code generation
 - [x] **Phase 4**: Dual-mode input normalization (Canonical JSON)
 - [x] **Phase 5**: Constraint-aware alternatives & scoring engine
-- [ ] **Phase 6**: Explainable configuration diff
+- [x] **Phase 6**: Explainable configuration diff
 - [ ] **Phase 7**: Web UI & Configuration Studio
