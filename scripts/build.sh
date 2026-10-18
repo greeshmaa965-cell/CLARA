@@ -19,8 +19,12 @@ gcc -Iinclude src/ast/ast.c src/lexer/lex.yy.c src/parser/parser.c tests/parser/
 ./tests/parser/parser_test
 rm tests/parser/parser_test
 
+gcc -Iinclude src/ast/ast.c src/semantic/symbol_table.c src/semantic/semantic.c src/lexer/lex.yy.c src/parser/parser.c src/ir/ir.c src/codegen/codegen.c tests/codegen/codegen_test.c -o tests/codegen/codegen_test
+./tests/codegen/codegen_test
+rm tests/codegen/codegen_test
+
 echo "[3/3] Building clara executable..."
-gcc -Iinclude src/ast/ast.c src/semantic/symbol_table.c src/semantic/semantic.c src/lexer/lex.yy.c src/parser/parser.c src/main.c -o clara
+gcc -Iinclude src/ast/ast.c src/semantic/symbol_table.c src/semantic/semantic.c src/lexer/lex.yy.c src/parser/parser.c src/ir/ir.c src/codegen/codegen.c src/main.c -o clara
 
 rm src/lexer/lex.yy.c
 echo "CLARA build complete! Run: ./clara --help"

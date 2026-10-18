@@ -15,6 +15,8 @@ set(CLARA_CORE_SOURCES
     src/semantic/symbol_table.c
     src/semantic/semantic.c
     src/parser/parser.c
+    src/ir/ir.c
+    src/codegen/codegen.c
     ${FLEX_CLARAScanner_OUTPUTS}
 )
 
@@ -43,7 +45,19 @@ add_executable(parser_test
     tests/parser/parser_test.c
 )
 
+add_executable(codegen_test
+    src/ast/ast.c
+    src/semantic/symbol_table.c
+    src/semantic/semantic.c
+    src/parser/parser.c
+    src/ir/ir.c
+    src/codegen/codegen.c
+    ${FLEX_CLARAScanner_OUTPUTS}
+    tests/codegen/codegen_test.c
+)
+
 enable_testing()
 add_test(NAME SymbolTableTest COMMAND symbol_table_test)
 add_test(NAME SemanticTest COMMAND semantic_test)
 add_test(NAME ParserTest COMMAND parser_test)
+add_test(NAME CodegenTest COMMAND codegen_test)

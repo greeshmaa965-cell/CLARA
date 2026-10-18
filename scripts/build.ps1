@@ -26,9 +26,13 @@ gcc -Iinclude src/ast/ast.c src/lexer/lex.yy.c src/parser/parser.c tests/parser/
 .\tests\parser\parser_test.exe
 Remove-Item tests/parser/parser_test.exe
 
+gcc -Iinclude src/ast/ast.c src/semantic/symbol_table.c src/semantic/semantic.c src/lexer/lex.yy.c src/parser/parser.c src/ir/ir.c src/codegen/codegen.c tests/codegen/codegen_test.c -o tests/codegen/codegen_test.exe
+.\tests\codegen\codegen_test.exe
+Remove-Item tests/codegen/codegen_test.exe
+
 # Compile CLARA Executable
 Write-Host "[3/3] Building clara.exe..."
-gcc -Iinclude src/ast/ast.c src/semantic/symbol_table.c src/semantic/semantic.c src/lexer/lex.yy.c src/parser/parser.c src/main.c -o clara.exe
+gcc -Iinclude src/ast/ast.c src/semantic/symbol_table.c src/semantic/semantic.c src/lexer/lex.yy.c src/parser/parser.c src/ir/ir.c src/codegen/codegen.c src/main.c -o clara.exe
 
 # Clean up generated lexer file
 Remove-Item src/lexer/lex.yy.c
