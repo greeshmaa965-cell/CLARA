@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CLARA — Cloud Language, Analysis, and Resource Architecture</title>
+  <meta name="description" content="A compiler-based Domain-Specific Language (DSL) and intelligent recommendation platform for declarative, validated, and explainable cloud infrastructure.">
+  
+  <!-- Google Fonts: Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles/index.css">
+</head>
+<body>
+
+  <!-- Atmospheric Steam / Cloud Ambient Glow -->
+  <div class="ambient-glow" aria-hidden="true">
+    <div class="glow-orb glow-orb-1"></div>
+    <div class="glow-orb glow-orb-2"></div>
+    <div class="glow-orb glow-orb-3"></div>
+  </div>
+
+  <!-- Header & Navigation -->
+  <header class="site-header" id="top">
+    <div class="nav-container">
+      <a href="#top" class="logo-group" aria-label="CLARA Home">
+        <div class="logo-icon">C</div>
+        <span class="logo-text">CLARA</span>
+      </a>
+      <nav class="main-nav" aria-label="Main Navigation">
+        <a href="#studio" class="nav-link">Configuration Studio</a>
+        <a href="#features" class="nav-link">Novelty Features</a>
+        <a href="#pipeline" class="nav-link">Compiler Pipeline</a>
+        <a href="https://github.com/greeshmaa965-cell/CLARA" target="_blank" rel="noopener" class="nav-link">GitHub</a>
+      </nav>
+      <a href="#studio" class="nav-cta">Launch Studio</a>
+    </div>
+  </header>
+
+  <div class="page-wrapper">
+
+    <!-- Hero Section -->
+    <section class="hero-section" id="hero">
+      <div class="pill-badge">
+        <span class="pill-dot"></span>
+        <span>Cloud configuration, made clearer</span>
+      </div>
+      <h1 class="hero-headline">DESCRIBE. OPTIMIZE. DEPLOY.</h1>
+      <p class="hero-subtitle">
+        Turn cloud requirements into validated configurations, compare feasible alternatives, and understand every recommended change.
+      </p>
+      <div class="hero-actions">
+        <a href="#studio" class="btn-primary" id="btn-start-configuring">
+          <span>Start Configuring</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </a>
+        <a href="#features" class="btn-secondary">Explore Features</a>
+      </div>
+      <p class="hero-note">One request. Clear options. Explainable decisions.</p>
+    </section>
+
+    <!-- Configuration Studio (Main Product Experience) -->
+    <section class="glass-panel" id="studio">
+      <div class="panel-header">
+        <div>
+          <h2 class="panel-title">Configuration Studio <span>// Input Normalization & Candidate Engine</span></h2>
+        </div>
+        <div class="mode-tabs" role="tablist">
+          <button class="tab-btn active" id="tab-nl" role="tab" aria-selected="true" type="button">Natural Language</button>
+          <button class="tab-btn" id="tab-form" role="tab" aria-selected="false" type="button">Structured Form</button>
+        </div>
+      </div>
+
+      <!-- Natural Language Mode -->
+      <div class="nl-container" id="nl-form-container">
+        <label for="nl-input" class="form-label">
+          <span>Describe your cloud requirement in plain English:</span>
+        </label>
+        <textarea id="nl-input" class="nl-textarea" placeholder="e.g. I need a small AWS web server in Mumbai with 2 vCPUs, 4 GB RAM, and 50 GB storage. Keep the monthly cost low.">I need a small AWS web server in Mumbai with 2 vCPUs, 4 GB RAM, and 50 GB storage. Keep the monthly cost low.</textarea>
+        
+        <div class="prompt-suggestions">
+          <span class="suggestion-label">Try sample queries:</span>
+          <button type="button" class="suggestion-pill" data-prompt="I need a small AWS web server in Mumbai with 2 vCPUs, 4 GB RAM, and 50 GB storage. Keep the monthly cost low.">AWS Mumbai Web Server</button>
+          <button type="button" class="suggestion-pill" data-prompt="I need an Azure database in Mumbai with 4 vCPUs, 16 GB RAM, and 200 GB storage. Prioritize performance.">Azure High-RAM Database</button>
+          <button type="button" class="suggestion-pill" data-prompt="Deploy a GCP API server with 2 vCPUs, 8 GB RAM, and 50 GB SSD disk.">GCP API Server</button>
+        </div>
+
+        <div class="form-actions" style="margin-top: 12px;">
+          <button class="btn-primary" id="btn-submit-nl" type="button">Normalize & Generate Alternatives</button>
+        </div>
+      </div>
+
+      <!-- Structured Form Mode -->
+      <form id="struct-form-container" style="display: none;">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="form-provider" class="form-label">Cloud Provider</label>
+            <select id="form-provider" class="form-select">
+              <option value="aws" selected>Amazon Web Services (AWS)</option>
+              <option value="azure">Microsoft Azure</option>
+              <option value="gcp">Google Cloud Platform (GCP)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="form-region" class="form-label">Deployment Region</label>
+            <select id="form-region" class="form-select">
+              <option value="ap-south-1" selected>Mumbai (ap-south-1 / centralindia / asia-south1)</option>
+              <option value="us-east-1">N. Virginia (us-east-1 / eastus)</option>
+              <option value="eu-central-1">Frankfurt (eu-central-1 / westeurope)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="form-workload" class="form-label">Workload Type</label>
+            <select id="form-workload" class="form-select">
+              <option value="web_server" selected>Web Server</option>
+              <option value="database">Database Service</option>
+              <option value="api_server">API Microservice</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="form-vcpu" class="form-label">Minimum vCPU Cores</label>
+            <input type="number" id="form-vcpu" class="form-input" min="1" max="64" value="2">
+          </div>
+          <div class="form-group">
+            <label for="form-memory" class="form-label">Minimum RAM (GB)</label>
+            <input type="number" id="form-memory" class="form-input" min="0.5" step="0.5" max="256" value="4">
+          </div>
+          <div class="form-group">
+            <label for="form-storage" class="form-label">Storage Capacity (GB)</label>
+            <input type="number" id="form-storage" class="form-input" min="10" step="10" max="4000" value="50">
+          </div>
+          <div class="form-group">
+            <label for="form-priority" class="form-label">Optimization Priority</label>
+            <select id="form-priority" class="form-select">
+              <option value="cost" selected>Lowest Feasible Cost</option>
+              <option value="balanced">Balanced Headroom</option>
+              <option value="performance">Maximum Performance</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="form-budget" class="form-label">Monthly Budget Ceiling (Optional $)</label>
+            <input type="number" id="form-budget" class="form-input" placeholder="e.g. 50">
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn-primary" id="btn-submit-form" type="submit">Submit Specifications</button>
+        </div>
+      </form>
+
+      <!-- Diagnostics Alert Container -->
+      <div id="diagnostics-alert" class="alert-box" style="display: none; margin-top: 24px;"></div>
+    </section>
+
+    <!-- Results Section: Canonical JSON & Alternatives -->
+    <div class="results-grid">
+
+      <!-- Feasible Alternatives -->
+      <section class="glass-panel" id="alternatives">
+        <div class="panel-header">
+          <h2 class="panel-title">Feasible Architecture Alternatives <span>// Constraint-Filtered Candidates</span></h2>
+        </div>
+        <p style="color: var(--text-muted); font-size: 14px;">
+          The recommendation engine filtered hardware instances from the versioned pricing catalogue, rejecting candidates that violated your hard limits.
+        </p>
+
+        <div class="alternatives-container" id="candidates-cards-container">
+          <!-- Populated by app.js -->
+        </div>
+      </section>
+
+      <!-- Explainable Configuration Diff -->
+      <section class="glass-panel" id="diff">
+        <div class="panel-header">
+          <h2 class="panel-title">Explainable Configuration Diff <span>// Transparent Rule Attributions</span></h2>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <label class="form-label" style="font-size: 12px; cursor: pointer;">
+              <input type="checkbox" id="toggle-unchanged" checked> Show Unchanged Dimensions
+            </label>
+          </div>
+        </div>
+        <p style="color: var(--text-muted); font-size: 14px;">
+          Every delta between your requested specifications and the selected recommendation is backed by a verifiable rule or constraint ID:
+        </p>
+
+        <div class="diff-table-wrapper">
+          <table class="diff-table">
+            <thead>
+              <tr>
+                <th>Infrastructure Field</th>
+                <th>Original Request</th>
+                <th>Recommended</th>
+                <th>Action</th>
+                <th>Reasoning & Grounded Rule ID</th>
+              </tr>
+            </thead>
+            <tbody id="diff-table-body">
+              <!-- Populated by app.js -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Canonical JSON and Compiler Code Exporter -->
+      <section class="glass-panel" id="compiler-artifacts">
+        <div class="panel-header">
+          <h2 class="panel-title">Compiler Artifacts & Infrastructure as Code <span>// DSL, IR & Terraform</span></h2>
+          <div class="mode-tabs">
+            <button class="tab-btn out-tab active" data-target="dsl" type="button">CLARA DSL (.clara)</button>
+            <button class="tab-btn out-tab" data-target="ir" type="button">Intermediate Rep (IR)</button>
+            <button class="tab-btn out-tab" data-target="terraform" type="button">Terraform (HCL)</button>
+          </div>
+        </div>
+
+        <div class="code-viewer">
+          <div class="code-header">
+            <span class="code-title" id="code-title-text">clara_specification.clara</span>
+            <div class="code-actions">
+              <button class="btn-icon" id="btn-copy-code" type="button">Copy Code</button>
+            </div>
+          </div>
+          <pre class="code-block"><code id="generated-code-block">Loading compiler artifacts...</code></pre>
+        </div>
+
+        <!-- Collapsible Canonical Interpretation JSON -->
+        <details style="margin-top: 20px; cursor: pointer; color: var(--text-soft); font-size: 13px;">
+          <summary style="font-weight: 600; color: var(--accent-amber);">Inspect Normalized Canonical JSON (API Schema)</summary>
+          <div class="code-viewer" style="margin-top: 10px;">
+            <pre class="code-block"><code id="canonical-json-preview">Loading canonical schema...</code></pre>
+          </div>
+        </details>
+      </section>
+
+    </div>
+
+    <!-- Pipeline Architecture Showcase -->
+    <section class="glass-panel" id="pipeline" style="margin-top: 40px;">
+      <div class="panel-header">
+        <h2 class="panel-title">End-to-End Compiler Pipeline <span>// All Phases Implemented</span></h2>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-top: 16px;">
+        <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); padding: 16px; border-radius: var(--radius-sm);">
+          <div style="color: var(--accent-amber); font-weight: 700; font-size: 12px; margin-bottom: 4px;">PHASE 1</div>
+          <div style="font-weight: 600; font-size: 15px; margin-bottom: 6px;">Lexical Scanner</div>
+          <div style="font-size: 12px; color: var(--text-muted);">Flex-based scanner recognizing keywords, identifiers, numerics, and units.</div>
+        </div>
+        <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); padding: 16px; border-radius: var(--radius-sm);">
+          <div style="color: var(--accent-amber); font-weight: 700; font-size: 12px; margin-bottom: 4px;">PHASE 2</div>
+          <div style="font-weight: 600; font-size: 15px; margin-bottom: 6px;">Parser & AST</div>
+          <div style="font-size: 12px; color: var(--text-muted);">Recursive-descent grammar parser creating AST nodes with symbol table resolution.</div>
+        </div>
+        <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); padding: 16px; border-radius: var(--radius-sm);">
+          <div style="color: var(--accent-amber); font-weight: 700; font-size: 12px; margin-bottom: 4px;">PHASE 3</div>
+          <div style="font-weight: 600; font-size: 15px; margin-bottom: 6px;">IR & Codegen</div>
+          <div style="font-size: 12px; color: var(--text-muted);">Translates AST into normalized Intermediate Representation and emits Terraform HCL.</div>
+        </div>
+        <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); padding: 16px; border-radius: var(--radius-sm);">
+          <div style="color: var(--accent-amber); font-weight: 700; font-size: 12px; margin-bottom: 4px;">PHASE 4</div>
+          <div style="font-weight: 600; font-size: 15px; margin-bottom: 6px;">Dual-Mode Normalizer</div>
+          <div style="font-size: 12px; color: var(--text-muted);">Converts both NL and form inputs into the single canonical JSON schema.</div>
+        </div>
+        <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); padding: 16px; border-radius: var(--radius-sm);">
+          <div style="color: var(--accent-amber); font-weight: 700; font-size: 12px; margin-bottom: 4px;">PHASE 5</div>
+          <div style="font-weight: 600; font-size: 15px; margin-bottom: 6px;">Alternatives Engine</div>
+          <div style="font-size: 12px; color: var(--text-muted);">Filters hard constraints across clouds and scores 3 feasible candidate profiles.</div>
+        </div>
+        <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); padding: 16px; border-radius: var(--radius-sm);">
+          <div style="color: var(--accent-amber); font-weight: 700; font-size: 12px; margin-bottom: 4px;">PHASE 6</div>
+          <div style="font-weight: 600; font-size: 15px; margin-bottom: 6px;">Explainable Diff</div>
+          <div style="font-size: 12px; color: var(--text-muted);">Provides grounded explanations and rule IDs for every architectural delta.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Novelty Features Section -->
+    <section class="glass-panel" id="features">
+      <div class="panel-header">
+        <h2 class="panel-title">The Three Novelty Features <span>// Core Innovations</span></h2>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-top: 16px;">
+        <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); padding: 24px; border-radius: var(--radius-md);">
+          <div style="color: var(--accent-amber); font-weight: 700; font-size: 12px; margin-bottom: 8px;">NOVELTY 1</div>
+          <h3 style="font-size: 18px; margin-bottom: 10px;">Dual-Mode Normalization</h3>
+          <p style="font-size: 13px; color: var(--text-soft); line-height: 1.6;">
+            Users can describe infrastructure naturally in conversational English or select options in a structured form. Both modes normalize to an identical schema without bypassing compiler validation.
+          </p>
+        </div>
+        <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); padding: 24px; border-radius: var(--radius-md);">
+          <div style="color: var(--accent-amber); font-weight: 700; font-size: 12px; margin-bottom: 8px;">NOVELTY 2</div>
+          <h3 style="font-size: 18px; margin-bottom: 10px;">Constraint-Aware Alternatives</h3>
+          <p style="font-size: 13px; color: var(--text-soft); line-height: 1.6;">
+            Evaluates multi-cloud hardware catalogues to produce three distinct feasible configurations: Cost-Optimized, Balanced, and Performance-Focused, with itemized budget and constraint checks.
+          </p>
+        </div>
+        <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); padding: 24px; border-radius: var(--radius-md);">
+          <div style="color: var(--accent-amber); font-weight: 700; font-size: 12px; margin-bottom: 8px;">NOVELTY 3</div>
+          <h3 style="font-size: 18px; margin-bottom: 10px;">Explainable Configuration Diff</h3>
+          <p style="font-size: 13px; color: var(--text-soft); line-height: 1.6;">
+            Transparently explains why a recommendation differs from user requirements, citing verified constraint rules, headroom policies, and instance shape constraints.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <p><strong>CLARA</strong> — Cloud Language, Analysis, and Resource Architecture</p>
+    <p style="margin-top: 6px;">Open source compiler & recommendation engine for cloud infrastructure.</p>
+  </footer>
+
+  <!-- Application Logic -->
+  <script src="src/app.js"></script>
+</body>
+</html>
