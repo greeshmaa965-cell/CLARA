@@ -126,7 +126,7 @@ def extract_priority(text: str) -> str:
     text_lower = text.lower()
     if re.search(r"\b(low\s*cost|lowest\s*cost|cheap(?:est)?|cost\s*low|cost-optimized|save\s*money)\b", text_lower):
         return "cost"
-    if re.search(r"\b(high\s*performance|fast(?:est)?|maximum\s*throughput|speed)\b", text_lower):
+    if re.search(r"\b((?:high\s*)?performance|fast(?:est)?|maximum\s*throughput|speed)\b", text_lower):
         return "performance"
     if re.search(r"\b(balanced|standard|moderate)\b", text_lower):
         return "balanced"
