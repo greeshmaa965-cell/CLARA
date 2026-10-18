@@ -6,8 +6,9 @@ build/
 
 # Generated compiler files
 
-parser
-compiler
+/parser
+/compiler
+/clara
 
 # Python
 __pycache__/

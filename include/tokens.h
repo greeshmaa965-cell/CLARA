@@ -23,4 +23,6 @@ typedef enum
 
 } TokenType;
 
+const char *token_type_name(TokenType type);
+
 #endif

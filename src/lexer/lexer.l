@@ -1,6 +1,37 @@
 %{
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "tokens.h"
+
+int clara_lexer_verbose = 0;
+
+const char *token_type_name(TokenType type)
+{
+    switch (type)
+    {
+        case TOKEN_CLOUD:          return "CLOUD";
+        case TOKEN_SERVER:         return "SERVER";
+        case TOKEN_DATABASE:       return "DATABASE";
+        case TOKEN_CPU:            return "CPU";
+        case TOKEN_MEMORY:         return "MEMORY";
+        case TOKEN_STORAGE:        return "STORAGE";
+        case TOKEN_REGION:         return "REGION";
+        case TOKEN_IDENTIFIER:     return "IDENTIFIER";
+        case TOKEN_NUMBER:         return "NUMBER";
+        case TOKEN_UNIT:           return "UNIT";
+        case TOKEN_LBRACE:         return "{";
+        case TOKEN_RBRACE:         return "}";
+        case TOKEN_EOF:            return "EOF";
+        case TOKEN_LEXICAL_ERROR:  return "LEXICAL_ERROR";
+        default:                   return "UNKNOWN_TOKEN";
+    }
+}
+
+void clara_lexer_reset(void)
+{
+    yylineno = 1;
+}
 %}
 
 %option noyywrap
@@ -9,72 +40,72 @@
 %%
 
 "CLOUD" {
-    printf("TOKEN_CLOUD\n");
+    if (clara_lexer_verbose) printf("TOKEN_CLOUD\n");
     return TOKEN_CLOUD;
 }
 
 "SERVER" {
-    printf("TOKEN_SERVER\n");
+    if (clara_lexer_verbose) printf("TOKEN_SERVER\n");
     return TOKEN_SERVER;
 }
 
 "DATABASE" {
-    printf("TOKEN_DATABASE\n");
+    if (clara_lexer_verbose) printf("TOKEN_DATABASE\n");
     return TOKEN_DATABASE;
 }
 
 "CPU" {
-    printf("TOKEN_CPU\n");
+    if (clara_lexer_verbose) printf("TOKEN_CPU\n");
     return TOKEN_CPU;
 }
 
 "MEMORY" {
-    printf("TOKEN_MEMORY\n");
+    if (clara_lexer_verbose) printf("TOKEN_MEMORY\n");
     return TOKEN_MEMORY;
 }
 
 "STORAGE" {
-    printf("TOKEN_STORAGE\n");
+    if (clara_lexer_verbose) printf("TOKEN_STORAGE\n");
     return TOKEN_STORAGE;
 }
 
 "REGION" {
-    printf("TOKEN_REGION\n");
+    if (clara_lexer_verbose) printf("TOKEN_REGION\n");
     return TOKEN_REGION;
 }
 
 "MB" {
-    printf("TOKEN_UNIT(%s)\n", yytext);
+    if (clara_lexer_verbose) printf("TOKEN_UNIT(%s)\n", yytext);
     return TOKEN_UNIT;
 }
 
 "GB" {
-    printf("TOKEN_UNIT(%s)\n", yytext);
+    if (clara_lexer_verbose) printf("TOKEN_UNIT(%s)\n", yytext);
     return TOKEN_UNIT;
 }
 
 "TB" {
-    printf("TOKEN_UNIT(%s)\n", yytext);
+    if (clara_lexer_verbose) printf("TOKEN_UNIT(%s)\n", yytext);
     return TOKEN_UNIT;
 }
 
 "{" {
-    printf("TOKEN_LBRACE\n");
+    if (clara_lexer_verbose) printf("TOKEN_LBRACE\n");
     return TOKEN_LBRACE;
 }
 
 "}" {
-    printf("TOKEN_RBRACE\n");
+    if (clara_lexer_verbose) printf("TOKEN_RBRACE\n");
     return TOKEN_RBRACE;
 }
 
 [0-9]+ {
-    printf("TOKEN_NUMBER(%s)\n", yytext);
+    if (clara_lexer_verbose) printf("TOKEN_NUMBER(%s)\n", yytext);
     return TOKEN_NUMBER;
 }
 
 [A-Za-z_][A-Za-z0-9_-]* {
-    printf("TOKEN_IDENTIFIER(%s)\n", yytext);
+    if (clara_lexer_verbose) printf("TOKEN_IDENTIFIER(%s)\n", yytext);
     return TOKEN_IDENTIFIER;
 }
 
@@ -85,8 +116,9 @@
 }
 
 . {
-    printf(
-        "LEXICAL_ERROR: line %d: unexpected character '%s'\n",
+    fprintf(
+        stderr,
+        "Lexical error: line %d: unexpected character '%s'\n",
         yylineno,
         yytext
     );
@@ -99,9 +131,11 @@
 
 %%
 
+#ifdef CLARA_LEXER_STANDALONE
 int main(void)
 {
     int token;
+    clara_lexer_verbose = 1;
 
     do
     {
@@ -112,3 +146,4 @@ int main(void)
 
     return 0;
 }
+#endif
