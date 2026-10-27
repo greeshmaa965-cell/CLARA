@@ -26,4 +26,5 @@ venv/
 # OS
 .DS_Store
 Thumbs.db
+desktop.ini
 lex.yy.c

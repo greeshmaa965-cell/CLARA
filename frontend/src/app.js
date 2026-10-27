@@ -23,7 +23,12 @@ const CATALOG = {
         { type: "c6i.xlarge", vcpu: 4, memory_gb: 8.0, monthly_rate: 124.00, family: "compute_optimized" },
         { type: "m6i.large", vcpu: 2, memory_gb: 8.0, monthly_rate: 70.00, family: "general_purpose" },
         { type: "m6i.xlarge", vcpu: 4, memory_gb: 16.0, monthly_rate: 140.00, family: "general_purpose" },
-        { type: "m6i.2xlarge", vcpu: 8, memory_gb: 32.0, monthly_rate: 280.00, family: "general_purpose" }
+        { type: "m6i.2xlarge", vcpu: 8, memory_gb: 32.0, monthly_rate: 280.00, family: "general_purpose" },
+        { type: "c6i.2xlarge", vcpu: 8, memory_gb: 16.0, monthly_rate: 248.00, family: "compute_optimized" },
+        { type: "c6i.4xlarge", vcpu: 16, memory_gb: 32.0, monthly_rate: 496.00, family: "compute_optimized" },
+        { type: "m6i.4xlarge", vcpu: 16, memory_gb: 64.0, monthly_rate: 560.00, family: "general_purpose" },
+        { type: "c6i.8xlarge", vcpu: 32, memory_gb: 64.0, monthly_rate: 992.00, family: "compute_optimized" },
+        { type: "m6i.8xlarge", vcpu: 32, memory_gb: 128.0, monthly_rate: 1120.00, family: "general_purpose" }
       ]
     },
     azure: {
@@ -35,7 +40,11 @@ const CATALOG = {
         { type: "Standard_B4ms", vcpu: 4, memory_gb: 16.0, monthly_rate: 121.44, family: "burstable" },
         { type: "Standard_B8ms", vcpu: 8, memory_gb: 32.0, monthly_rate: 242.88, family: "burstable" },
         { type: "Standard_D2s_v5", vcpu: 2, memory_gb: 8.0, monthly_rate: 70.08, family: "general_purpose" },
-        { type: "Standard_D4s_v5", vcpu: 4, memory_gb: 16.0, monthly_rate: 140.16, family: "general_purpose" }
+        { type: "Standard_D4s_v5", vcpu: 4, memory_gb: 16.0, monthly_rate: 140.16, family: "general_purpose" },
+        { type: "Standard_D8s_v5", vcpu: 8, memory_gb: 32.0, monthly_rate: 280.32, family: "general_purpose" },
+        { type: "Standard_D16s_v5", vcpu: 16, memory_gb: 64.0, monthly_rate: 560.64, family: "general_purpose" },
+        { type: "Standard_F16s_v2", vcpu: 16, memory_gb: 32.0, monthly_rate: 493.48, family: "compute_optimized" },
+        { type: "Standard_D32s_v5", vcpu: 32, memory_gb: 128.0, monthly_rate: 1121.28, family: "general_purpose" }
       ]
     },
     gcp: {
@@ -46,7 +55,10 @@ const CATALOG = {
         { type: "e2-medium", vcpu: 2, memory_gb: 4.0, monthly_rate: 24.46, family: "general_purpose" },
         { type: "e2-standard-2", vcpu: 2, memory_gb: 8.0, monthly_rate: 48.92, family: "general_purpose" },
         { type: "e2-standard-4", vcpu: 4, memory_gb: 16.0, monthly_rate: 97.84, family: "general_purpose" },
-        { type: "e2-standard-8", vcpu: 8, memory_gb: 32.0, monthly_rate: 195.68, family: "general_purpose" }
+        { type: "e2-standard-8", vcpu: 8, memory_gb: 32.0, monthly_rate: 195.68, family: "general_purpose" },
+        { type: "e2-standard-16", vcpu: 16, memory_gb: 64.0, monthly_rate: 391.36, family: "general_purpose" },
+        { type: "c2-standard-16", vcpu: 16, memory_gb: 64.0, monthly_rate: 490.56, family: "compute_optimized" },
+        { type: "e2-standard-32", vcpu: 32, memory_gb: 128.0, monthly_rate: 782.72, family: "general_purpose" }
       ]
     }
   }
@@ -68,14 +80,45 @@ const state = {
   currentOutputTab: "dsl"
 };
 
+let isBackendConnected = false;
+const API_BASE = (typeof window !== "undefined" && window.location && window.location.port === "8000") ? "" : "http://127.0.0.1:8000";
+
+async function checkBackendHealth() {
+  const badge = document.getElementById("backend-status-badge");
+  const badgeText = document.getElementById("backend-status-text");
+  try {
+    const res = await fetch(`${API_BASE}/api/health`);
+    if (res.ok) {
+      const data = await res.json();
+      isBackendConnected = true;
+      if (badge && badgeText) {
+        badge.classList.add("online");
+        badgeText.textContent = `Backend Live (${data.version})`;
+        badge.title = `Compiler: ${data.compiler_available ? "Ready" : "Unavailable"}`;
+      }
+      return true;
+    }
+  } catch (e) {
+    isBackendConnected = false;
+    if (badge && badgeText) {
+      badge.classList.remove("online");
+      badgeText.textContent = "Backend Offline (Client-Side Active)";
+      badge.title = "Local client-side simulation active";
+    }
+  }
+  return false;
+}
+
 // UI Initialization
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   setupTabs();
   setupSuggestions();
   setupEventListeners();
 
+  await checkBackendHealth();
+
   // Run initial demo configuration
-  processNaturalLanguage("I need a small AWS web server in Mumbai with 2 vCPUs, 4 GB RAM, and 50 GB storage. Keep the monthly cost low.");
+  await processNaturalLanguage("I need a small AWS web server in Mumbai with 2 vCPUs, 4 GB RAM, and 50 GB storage. Keep the monthly cost low.");
 });
 
 function setupTabs() {
@@ -113,36 +156,56 @@ function setupTabs() {
 
 function setupSuggestions() {
   document.querySelectorAll(".suggestion-pill").forEach(pill => {
-    pill.addEventListener("click", () => {
+    pill.addEventListener("click", async () => {
       const text = pill.dataset.prompt;
       document.getElementById("nl-input").value = text;
-      processNaturalLanguage(text);
+      await processNaturalLanguage(text);
     });
   });
 }
 
 function setupEventListeners() {
-  document.getElementById("btn-submit-nl").addEventListener("click", () => {
+  document.getElementById("btn-submit-nl").addEventListener("click", async () => {
     const text = document.getElementById("nl-input").value.trim();
-    processNaturalLanguage(text);
+    await processNaturalLanguage(text);
   });
 
-  document.getElementById("btn-submit-form").addEventListener("click", (e) => {
+  document.getElementById("btn-submit-form").addEventListener("click", async (e) => {
     e.preventDefault();
-    processStructuredForm();
+    await processStructuredForm();
   });
 
-  document.getElementById("toggle-unchanged").addEventListener("change", (e) => {
+  document.getElementById("toggle-unchanged").addEventListener("change", async (e) => {
     state.showUnchangedDiff = e.target.checked;
-    renderDiff();
+    await renderDiff();
   });
 
   document.getElementById("btn-copy-code").addEventListener("click", copyCurrentCode);
 }
 
 // Phase 4: Normalization
-function processNaturalLanguage(text) {
+async function processNaturalLanguage(text) {
   if (!text) return;
+
+  // Attempt to normalize via Backend API
+  try {
+    const res = await fetch(`${API_BASE}/api/normalize`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ mode: "natural_language", input: { text } })
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.normalized_request) {
+        await applyCanonicalRequest(data.normalized_request);
+        return;
+      }
+    }
+  } catch (err) {
+    console.debug("Backend normalize not reachable, using client-side fallback:", err);
+  }
+
+  // Client-side fallback
   const textLower = text.toLowerCase();
 
   // Provider
@@ -205,10 +268,10 @@ function processNaturalLanguage(text) {
     }
   };
 
-  applyCanonicalRequest(canonical);
+  await applyCanonicalRequest(canonical);
 }
 
-function processStructuredForm() {
+async function processStructuredForm() {
   const provider = document.getElementById("form-provider").value;
   const region = document.getElementById("form-region").value;
   const workload = document.getElementById("form-workload").value;
@@ -218,6 +281,35 @@ function processStructuredForm() {
   const priority = document.getElementById("form-priority").value;
   const rawBudget = document.getElementById("form-budget").value;
   const monthly_budget = rawBudget ? parseFloat(rawBudget) : null;
+
+  const rawForm = {
+    provider,
+    region,
+    workload,
+    vcpu_min: vcpu,
+    memory_gb_min: memory_gb,
+    storage_gb_min: storage_gb,
+    priority,
+    monthly_budget
+  };
+
+  // Attempt Backend API form normalization
+  try {
+    const res = await fetch(`${API_BASE}/api/normalize`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ mode: "form", input: rawForm })
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.normalized_request) {
+        await applyCanonicalRequest(data.normalized_request);
+        return;
+      }
+    }
+  } catch (err) {
+    console.debug("Backend form normalize not reachable, using fallback:", err);
+  }
 
   const canonical = {
     schema_version: "1.0",
@@ -238,19 +330,56 @@ function processStructuredForm() {
     }
   };
 
-  applyCanonicalRequest(canonical);
+  await applyCanonicalRequest(canonical);
 }
 
-function applyCanonicalRequest(canonical) {
+async function applyCanonicalRequest(canonical) {
   state.canonicalRequest = canonical;
   document.getElementById("canonical-json-preview").textContent = JSON.stringify(canonical, null, 2);
 
   // Phase 5: Alternatives Generation
-  generateAlternatives(canonical);
+  await generateAlternatives(canonical);
 }
 
 // Phase 5: Alternative Generation Engine
-function generateAlternatives(req) {
+async function generateAlternatives(req) {
+  // Attempt to fetch from Backend API
+  try {
+    const res = await fetch(`${API_BASE}/api/recommend`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(req)
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.status === "INFEASIBLE") {
+        const alertContainer = document.getElementById("diagnostics-alert");
+        if (alertContainer) {
+          alertContainer.style.display = "block";
+          alertContainer.className = "alert-box alert-error";
+          alertContainer.innerHTML = `<strong>Infeasible Request:</strong> ${data.message || "Declared constraints cannot be satisfied by catalogue."}`;
+        }
+        document.getElementById("candidates-cards-container").innerHTML = "";
+        document.getElementById("diff-table-body").innerHTML = "";
+        return;
+      }
+      if (data && data.candidates && data.candidates.length > 0) {
+        state.recommendations = data.candidates;
+        const recId = data.recommended_candidate_id || "A";
+        state.selectedCandidate = data.candidates.find(c => c.candidate_id === recId) || data.candidates[0];
+
+        const alertContainer = document.getElementById("diagnostics-alert");
+        if (alertContainer) alertContainer.style.display = "none";
+
+        renderCandidateCards();
+        await renderDiff();
+        await renderOutputCode();
+        return;
+      }
+    }
+  } catch (err) {
+    console.debug("Backend API recommend not available, using client-side fallback:", err);
+  }
   const providerData = CATALOG.providers[req.provider] || CATALOG.providers.aws;
   const storageRate = providerData.storage_rate;
   const instances = providerData.instances;
@@ -286,8 +415,15 @@ function generateAlternatives(req) {
   if (feasible.length === 0) {
     alertContainer.style.display = "block";
     alertContainer.className = "alert-box alert-error";
-    alertContainer.innerHTML = `<strong>Infeasible Request:</strong> Declared budget of $${budget}/mo cannot satisfy minimum specifications (${vcpuMin} vCPU, ${memMin} GB RAM). Please increase budget.`;
+    if (budget !== null && budget !== undefined && budget > 0) {
+      alertContainer.innerHTML = `<strong>Infeasible Request:</strong> Declared monthly budget of $${budget.toFixed(2)} cannot satisfy minimum specifications (${vcpuMin} vCPU, ${memMin} GB RAM). Please increase budget.`;
+    } else {
+      const maxVcpu = Math.max(...instances.map(i => i.vcpu));
+      const maxMem = Math.max(...instances.map(i => i.memory_gb));
+      alertContainer.innerHTML = `<strong>Infeasible Request:</strong> No single instance in the ${req.provider.toUpperCase()} catalogue satisfies minimum requirements (${vcpuMin} vCPU, ${memMin} GB RAM). Maximum available size is ${maxVcpu} vCPU, ${maxMem} GB RAM.`;
+    }
     document.getElementById("candidates-cards-container").innerHTML = "";
+    document.getElementById("diff-table-body").innerHTML = "";
     return;
   } else {
     alertContainer.style.display = "none";
@@ -361,11 +497,11 @@ function renderCandidateCards() {
 
     const card = document.createElement("div");
     card.className = `candidate-card ${isRec ? "recommended" : ""} ${isSelected ? "selected" : ""}`;
-    card.onclick = () => {
+    card.onclick = async () => {
       state.selectedCandidate = c;
       renderCandidateCards();
-      renderDiff();
-      renderOutputCode();
+      await renderDiff();
+      await renderOutputCode();
     };
 
     const profTitle = c.profile.replace("_", " ");
@@ -397,13 +533,69 @@ function renderCandidateCards() {
 }
 
 // Phase 6: Explainable Diff Engine
-function renderDiff() {
+async function renderDiff() {
   const req = state.canonicalRequest;
   const cand = state.selectedCandidate;
   if (!req || !cand) return;
 
   const tbody = document.getElementById("diff-table-body");
   tbody.innerHTML = "";
+
+  // Attempt to fetch from Backend API
+  try {
+    const res = await fetch(`${API_BASE}/api/diff`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        original_request: req,
+        candidate: cand,
+        include_unchanged: state.showUnchangedDiff
+      })
+    });
+    if (res.ok) {
+      const data = await res.json();
+      const allChanges = [...(data.changes || [])];
+      if (state.showUnchangedDiff && data.unchanged) {
+        data.unchanged.forEach(u => {
+          allChanges.push({
+            field: u.field,
+            display_name: u.display_name,
+            change_type: "unchanged",
+            old_value: u.value,
+            new_value: u.value,
+            unit: u.unit,
+            reason: u.reason,
+            rule_id: u.rule_id
+          });
+        });
+      }
+      if (allChanges.length > 0) {
+        allChanges.forEach(item => {
+          const isMod = item.change_type === "modified";
+          const isAdd = item.change_type === "added";
+          const actionClass = isMod ? "tag-modified" : isAdd ? "tag-added" : "tag-unchanged";
+          const actionText = item.change_type.toUpperCase();
+
+          const unitStr = item.unit ? ` ${item.unit}` : "";
+          const origStr = item.old_value !== null && item.old_value !== undefined ? `${item.old_value}${unitStr}` : "—";
+          const recStr = item.new_value !== null && item.new_value !== undefined ? `${item.new_value}${unitStr}` : "—";
+
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td><strong>${item.display_name || item.field}</strong></td>
+            <td>${origStr}</td>
+            <td><strong>${recStr}</strong></td>
+            <td><span class="tag-badge ${actionClass}">${actionText}</span></td>
+            <td>${item.reason} <span class="rule-badge">${item.rule_id}</span></td>
+          `;
+          tbody.appendChild(tr);
+        });
+        return;
+      }
+    }
+  } catch (err) {
+    console.debug("Backend diff not reachable, using client-side fallback:", err);
+  }
 
   const diffItems = [];
 
@@ -522,7 +714,7 @@ function renderDiff() {
 }
 
 // Phase 3 & 4: Code Generation & Exporters
-function renderOutputCode() {
+async function renderOutputCode() {
   const req = state.canonicalRequest;
   const cand = state.selectedCandidate;
   if (!req || !cand) return;
@@ -530,18 +722,56 @@ function renderOutputCode() {
   const codeBlock = document.getElementById("generated-code-block");
   const codeTitle = document.getElementById("code-title-text");
 
-  if (state.currentOutputTab === "dsl") {
-    codeTitle.textContent = "clara_specification.clara";
-    codeBlock.textContent = `CLOUD ${req.provider.toUpperCase()} {
+  const vcpu = cand.resources ? cand.resources.vcpu : 2;
+  const mem = cand.resources ? cand.resources.memory_gb : 4;
+  const stg = cand.resources ? cand.resources.storage_gb : 50;
+  const instType = cand.instance_type || "t3.medium";
+
+  const claraDsl = `CLOUD ${req.provider.toUpperCase()} {
     REGION ${req.region}
 
     SERVER ${req.workload} {
-        CPU ${cand.resources.vcpu}
-        MEMORY ${cand.resources.memory_gb}GB
-        STORAGE ${cand.resources.storage_gb}GB
+        CPU ${vcpu}
+        MEMORY ${mem}GB
+        STORAGE ${stg}GB
     }
 }`;
-  } else if (state.currentOutputTab === "ir") {
+
+  if (state.currentOutputTab === "dsl") {
+    codeTitle.textContent = "clara_specification.clara";
+    codeBlock.textContent = claraDsl;
+    return;
+  }
+
+  // Live compilation via native clara.exe compiler backend
+  if (isBackendConnected) {
+    try {
+      const res = await fetch(`${API_BASE}/api/compile`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          source: claraDsl,
+          target: state.currentOutputTab
+        })
+      });
+      if (res.ok) {
+        const result = await res.json();
+        if (result.status === "SUCCESS" && result.output) {
+          if (state.currentOutputTab === "ir") {
+            codeTitle.textContent = "intermediate_representation.json (Compiled by CLARA C Backend)";
+          } else if (state.currentOutputTab === "terraform") {
+            codeTitle.textContent = "main.tf (Compiled by CLARA C Backend)";
+          }
+          codeBlock.textContent = result.output;
+          return;
+        }
+      }
+    } catch (e) {
+      console.debug("Compiler API not reachable, fallback to template:", e);
+    }
+  }
+
+  if (state.currentOutputTab === "ir") {
     codeTitle.textContent = "intermediate_representation.json";
     const irObj = {
       schema_version: "1.0",
@@ -551,10 +781,10 @@ function renderOutputCode() {
         servers: [
           {
             name: req.workload,
-            cpu: cand.resources.vcpu,
-            memory_gb: cand.resources.memory_gb,
-            storage_gb: cand.resources.storage_gb,
-            instance_type: cand.instance_type
+            cpu: vcpu,
+            memory_gb: mem,
+            storage_gb: stg,
+            instance_type: instType
           }
         ]
       }
@@ -571,10 +801,10 @@ provider "${req.provider}" {
 
 resource "${req.provider}_instance" "${req.workload}" {
   ami           = "ami-0c55b159cbfafe1f0" # Ubuntu 22.04 LTS
-  instance_type = "${cand.instance_type}" # ${cand.resources.vcpu} vCPU, ${cand.resources.memory_gb} GB RAM
+  instance_type = "${instType}" # ${vcpu} vCPU, ${mem} GB RAM
 
   root_block_device {
-    volume_size = ${cand.resources.storage_gb} # GB
+    volume_size = ${stg} # GB
     volume_type = "gp3"
   }
 

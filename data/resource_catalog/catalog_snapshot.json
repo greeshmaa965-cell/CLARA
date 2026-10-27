@@ -16,7 +16,12 @@
         {"type": "c6i.xlarge", "vcpu": 4, "memory_gb": 8.0, "hourly_rate": 0.1700, "monthly_rate": 124.00, "family": "compute_optimized"},
         {"type": "m6i.large", "vcpu": 2, "memory_gb": 8.0, "hourly_rate": 0.0960, "monthly_rate": 70.00, "family": "general_purpose"},
         {"type": "m6i.xlarge", "vcpu": 4, "memory_gb": 16.0, "hourly_rate": 0.1920, "monthly_rate": 140.00, "family": "general_purpose"},
-        {"type": "m6i.2xlarge", "vcpu": 8, "memory_gb": 32.0, "hourly_rate": 0.3840, "monthly_rate": 280.00, "family": "general_purpose"}
+        {"type": "m6i.2xlarge", "vcpu": 8, "memory_gb": 32.0, "hourly_rate": 0.3840, "monthly_rate": 280.00, "family": "general_purpose"},
+        {"type": "c6i.2xlarge", "vcpu": 8, "memory_gb": 16.0, "hourly_rate": 0.3400, "monthly_rate": 248.00, "family": "compute_optimized"},
+        {"type": "c6i.4xlarge", "vcpu": 16, "memory_gb": 32.0, "hourly_rate": 0.6800, "monthly_rate": 496.00, "family": "compute_optimized"},
+        {"type": "m6i.4xlarge", "vcpu": 16, "memory_gb": 64.0, "hourly_rate": 0.7680, "monthly_rate": 560.00, "family": "general_purpose"},
+        {"type": "c6i.8xlarge", "vcpu": 32, "memory_gb": 64.0, "hourly_rate": 1.3600, "monthly_rate": 992.00, "family": "compute_optimized"},
+        {"type": "m6i.8xlarge", "vcpu": 32, "memory_gb": 128.0, "hourly_rate": 1.5360, "monthly_rate": 1120.00, "family": "general_purpose"}
       ]
     },
     "azure": {
@@ -28,7 +33,11 @@
         {"type": "Standard_B4ms", "vcpu": 4, "memory_gb": 16.0, "hourly_rate": 0.1664, "monthly_rate": 121.44, "family": "burstable"},
         {"type": "Standard_B8ms", "vcpu": 8, "memory_gb": 32.0, "hourly_rate": 0.3328, "monthly_rate": 242.88, "family": "burstable"},
         {"type": "Standard_D2s_v5", "vcpu": 2, "memory_gb": 8.0, "hourly_rate": 0.0960, "monthly_rate": 70.08, "family": "general_purpose"},
-        {"type": "Standard_D4s_v5", "vcpu": 4, "memory_gb": 16.0, "hourly_rate": 0.1920, "monthly_rate": 140.16, "family": "general_purpose"}
+        {"type": "Standard_D4s_v5", "vcpu": 4, "memory_gb": 16.0, "hourly_rate": 0.1920, "monthly_rate": 140.16, "family": "general_purpose"},
+        {"type": "Standard_D8s_v5", "vcpu": 8, "memory_gb": 32.0, "hourly_rate": 0.3840, "monthly_rate": 280.32, "family": "general_purpose"},
+        {"type": "Standard_D16s_v5", "vcpu": 16, "memory_gb": 64.0, "hourly_rate": 0.7680, "monthly_rate": 560.64, "family": "general_purpose"},
+        {"type": "Standard_F16s_v2", "vcpu": 16, "memory_gb": 32.0, "hourly_rate": 0.6760, "monthly_rate": 493.48, "family": "compute_optimized"},
+        {"type": "Standard_D32s_v5", "vcpu": 32, "memory_gb": 128.0, "hourly_rate": 1.5360, "monthly_rate": 1121.28, "family": "general_purpose"}
       ]
     },
     "gcp": {
@@ -39,7 +48,10 @@
         {"type": "e2-medium", "vcpu": 2, "memory_gb": 4.0, "hourly_rate": 0.0335, "monthly_rate": 24.46, "family": "general_purpose"},
         {"type": "e2-standard-2", "vcpu": 2, "memory_gb": 8.0, "hourly_rate": 0.0670, "monthly_rate": 48.92, "family": "general_purpose"},
         {"type": "e2-standard-4", "vcpu": 4, "memory_gb": 16.0, "hourly_rate": 0.1340, "monthly_rate": 97.84, "family": "general_purpose"},
-        {"type": "e2-standard-8", "vcpu": 8, "memory_gb": 32.0, "hourly_rate": 0.2680, "monthly_rate": 195.68, "family": "general_purpose"}
+        {"type": "e2-standard-8", "vcpu": 8, "memory_gb": 32.0, "hourly_rate": 0.2680, "monthly_rate": 195.68, "family": "general_purpose"},
+        {"type": "e2-standard-16", "vcpu": 16, "memory_gb": 64.0, "hourly_rate": 0.5360, "monthly_rate": 391.36, "family": "general_purpose"},
+        {"type": "c2-standard-16", "vcpu": 16, "memory_gb": 64.0, "hourly_rate": 0.6720, "monthly_rate": 490.56, "family": "compute_optimized"},
+        {"type": "e2-standard-32", "vcpu": 32, "memory_gb": 128.0, "hourly_rate": 1.0720, "monthly_rate": 782.72, "family": "general_purpose"}
       ]
     }
   }

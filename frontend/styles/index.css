@@ -194,6 +194,40 @@ body {
   box-shadow: var(--shadow-glow);
 }
 
+.backend-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--text-muted);
+  transition: var(--transition);
+}
+
+.backend-status.online {
+  background: rgba(52, 211, 153, 0.14);
+  border-color: rgba(52, 211, 153, 0.35);
+  color: #34d399;
+}
+
+.backend-status .status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #f59e0b;
+  display: inline-block;
+  transition: var(--transition);
+}
+
+.backend-status.online .status-dot {
+  background: #34d399;
+  box-shadow: 0 0 10px #34d399;
+}
+
 /* Main Container */
 .page-wrapper {
   position: relative;
