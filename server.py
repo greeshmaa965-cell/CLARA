@@ -12,8 +12,7 @@ from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Body
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import JSONResponse
 import uvicorn
 
 # Ensure repository root is in sys.path
@@ -172,16 +171,9 @@ def api_compile(payload: dict[str, Any] = Body(...)):
             os.remove(tmp_path)
 
 
-# Serve static frontend files if frontend directory exists
-if FRONTEND_DIR.is_dir():
-    app.mount("/styles", StaticFiles(directory=str(FRONTEND_DIR / "styles")), name="styles")
-    app.mount("/src", StaticFiles(directory=str(FRONTEND_DIR / "src")), name="src")
-    if (FRONTEND_DIR / "assets").is_dir():
-        app.mount("/assets", StaticFiles(directory=str(FRONTEND_DIR / "assets")), name="assets")
-
-    @app.get("/")
-    def serve_frontend_index():
-        return FileResponse(str(FRONTEND_DIR / "index.html"))
+@app.get("/")
+def root():
+    return {"message": "CLARA API is running", "docs": "/docs", "health": "/api/health"}
 
 
 def run():
