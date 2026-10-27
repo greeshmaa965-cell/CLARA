@@ -81,7 +81,7 @@ const state = {
 };
 
 let isBackendConnected = false;
-const API_BASE = (typeof window !== "undefined" && window.location && window.location.port === "8000") ? "" : "http://127.0.0.1:8000";
+const API_BASE = "https://clara-backend-z0ll.onrender.com";
 
 async function checkBackendHealth() {
   const badge = document.getElementById("backend-status-badge");
