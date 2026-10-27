@@ -12,7 +12,8 @@ from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Body
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse, JSONResponse
 import uvicorn
 
 # Ensure repository root is in sys.path
@@ -174,6 +175,22 @@ def api_compile(payload: dict[str, Any] = Body(...)):
 @app.get("/")
 def root():
     return {"message": "CLARA API is running", "docs": "/docs", "health": "/api/health"}
+
+
+# Serve static frontend locally (disabled on Render so API routes aren't shadowed)
+# Render automatically sets the RENDER environment variable
+IS_RENDER = os.environ.get("RENDER") is not None
+
+if not IS_RENDER and FRONTEND_DIR.is_dir():
+    if (FRONTEND_DIR / "styles").is_dir():
+        app.mount("/styles", StaticFiles(directory=str(FRONTEND_DIR / "styles")), name="styles")
+    if (FRONTEND_DIR / "src").is_dir():
+        app.mount("/src", StaticFiles(directory=str(FRONTEND_DIR / "src")), name="src")
+
+    @app.get("/app")
+    def serve_frontend_index():
+        """Serve the CLARA web app frontend (local/tunnel mode only)."""
+        return FileResponse(str(FRONTEND_DIR / "index.html"))
 
 
 def run():

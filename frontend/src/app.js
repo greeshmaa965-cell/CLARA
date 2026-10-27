@@ -81,7 +81,10 @@ const state = {
 };
 
 let isBackendConnected = false;
-const API_BASE = "https://clara-backend-z0ll.onrender.com";
+const _host = window.location.hostname;
+const API_BASE = (_host === "localhost" || _host === "127.0.0.1" || _host.endsWith(".lhr.life"))
+    ? ""   // relative paths when running locally or via lhr.life tunnel
+    : "https://clara-backend-z0ll.onrender.com";  // Render backend when on Vercel
 
 async function checkBackendHealth() {
   const badge = document.getElementById("backend-status-badge");
